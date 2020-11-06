@@ -75,5 +75,20 @@ class TextController extends Controller
         }
             echo "access_token: ".$token;
     }
+    public function ccc(){
+         $ToUserName = $array->FromUserName;
+         $FromUserName = $array->ToUserName;
+         $CreateTime = time();
+         $MsgType = "text";
+         $Content = "欢迎关注";
+         $res = '<xml>
+                 <ToUserName><![CDATA['.$ToUserName.']]></ToUserName>
+                 <FromUserName><![CDATA['.$FromUserName.']]></FromUserName>
+                 <CreateTime>'.$CreateTime.'</CreateTime>
+                 <MsgType><![CDATA['.$MsgType.']]></MsgType>
+                 <Content><![CDATA['.$Content.']]><Content>
+            </xml>';
+         echo $res;exit;
 
+    }
 }

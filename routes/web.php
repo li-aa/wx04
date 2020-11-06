@@ -17,3 +17,5 @@ Route::get('/', function () {
 Route::get('/wx/index','TextController@index');
 Route::any('/wx','TextController@wxEvent');
 Route::get('/wx/token','TextController@token');
+
+Route::get('/wx/ccc','TextController@ccc');
