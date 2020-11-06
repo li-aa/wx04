@@ -15,5 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 // Route::get('/aa','TextController@aa');
-Route::any('/wx','TextController@wxEvent');
+Route::any('/wx','TextController@wx');
 Route::get('/wx/token','TextController@token');
