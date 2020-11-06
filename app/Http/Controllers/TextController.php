@@ -47,9 +47,13 @@ class TextController extends Controller
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){            //验证通过
+            // 1 接收数据
+            $xml_str = file_get_contents("php://input");
+
+            // 记录日志
+            file_put_contents('wxenv.log',$xml_str);
             echo "";
-
-
+            die;
         }else{
             echo "";
         }
