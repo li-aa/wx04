@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Redis;
 use App\Http\Services\Curl;
 class TextController extends Controller
 {
-    private function index()
+    public function index()
 	{
     $signature = $_GET["signature"];
     $timestamp = $_GET["timestamp"];
