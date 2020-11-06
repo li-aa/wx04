@@ -34,6 +34,26 @@ class TextController extends Controller
         return false;
     }
 	}
+        public function wxEvent()
+    {
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+
+        $token = env('TOKEN');
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+
+        if( $tmpStr == $signature ){            //验证通过
+            echo "";
+
+
+        }else{
+            echo "";
+        }
+    }
     public function token(){
           $key = 'wx:access_token';
 
@@ -49,7 +69,7 @@ class TextController extends Controller
             $secret="8ef620ee05e3f29c7e4168a0a607d480";
             $url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
             $response = file_get_contents($url);
-
+            // dd($response);exit;
             $data = json_decode($response,true);
             $token = $data['access_token'];
 
