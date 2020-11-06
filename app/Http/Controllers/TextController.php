@@ -8,15 +8,7 @@ use Illuminate\Support\Facades\Redis;
 use App\Http\Services\Curl;
 class TextController extends Controller
 {
-    public function aa(){
-    	$echostr = request()->get("echostr", "");
-        if ($this->checkSignature() && !empty($echostr)) {
-
-            //第一次接入
-            echo $echostr;
-        }
-    }
-    private function checkSignature()
+    private function aa()
 	{
     $signature = $_GET["signature"];
     $timestamp = $_GET["timestamp"];
