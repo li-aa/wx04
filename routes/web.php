@@ -15,3 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/aa','TextController@aa');
+Route::get('/token','TextController@token');
