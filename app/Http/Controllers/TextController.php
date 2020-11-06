@@ -75,20 +75,57 @@ class TextController extends Controller
         }
             echo "access_token: ".$token;
     }
-    public function ccc(){
-         $ToUserName = $array->FromUserName;
-         $FromUserName = $array->ToUserName;
-         $CreateTime = time();
-         $MsgType = "text";
-         $Content = "欢迎关注";
-         $res = '<xml>
-                 <ToUserName><![CDATA['.$ToUserName.']]></ToUserName>
-                 <FromUserName><![CDATA['.$FromUserName.']]></FromUserName>
-                 <CreateTime>'.$CreateTime.'</CreateTime>
-                 <MsgType><![CDATA['.$MsgType.']]></MsgType>
-                 <Content><![CDATA['.$Content.']]><Content>
-            </xml>';
-         echo $res;exit;
+public function ccc()
+    {
+        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+        if (!empty($postStr)){
+            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $RX_TYPE = trim($postObj->MsgType);
 
+            //用户发送的消息类型判断
+            switch ($RX_TYPE)
+            {
+                case "text":
+                    $result = $this->receiveText($postObj);
+                    break;
+                case "image":
+                    $result = $this->receiveImage($postObj);
+                    break;
+                case "event":
+                    $result = $this->receiveEvent($postObj);
+                    break;
+                default:
+                    $result = "unknow msg type: ".$RX_TYPE;
+                    break;
+            }
+            echo $result;
+        }else {
+            echo "";
+            exit;
+        }
     }
+     private function transmitText($object, $content){
+    $textTpl = "<xml>
+        <ToUserName><![CDATA[%s]]></ToUserName>
+        <FromUserName><![CDATA[%s]]></FromUserName>
+        <CreateTime>%s</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[%s]]></Content>
+        </xml>";
+ $result = sprintf($textTpl, $object->FromUserName, $object->ToUserName, time(), $content);
+ return $result;
+}
+private function receiveEvent($object){
+    $contentStr = "";
+    switch ($object->Event)
+    {
+        case "subscribe":
+             $contentStr = "欢迎关注";
+             break;
+        default:
+            break;
+   }
+    $result = $this->transmitText($object, $contentStr);
+    return $result;
+}
 }
