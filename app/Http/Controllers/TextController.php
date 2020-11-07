@@ -21,11 +21,34 @@ class TextController extends Controller
     $tmpStr = sha1( $tmpStr );
     
     if( $tmpStr == $signature ){
-         echo $_GET['echostr'];
+        $xml_str = file_get_contents('php://input');
+        $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
+         if (strtolower($data->MsgType) == "event") {
+                //关注
+                if (strtolower($data->Event == 'subscribe')) {
+                    //回复用户消息(纯文本格式)
+                    $toUser = $data->FromUserName;
+                    $fromUser = $data->ToUserName;
+                    $msgType = 'text';
+                    $content = '欢迎关注微信公众账号';
+                    $template = "<xml>
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Content><![CDATA[%s]]></Content>
+                            </xml>";
+                    $info = sprintf($template, $toUser, $fromUser, time(), $msgType, $content);
+                    return $info;
+                }
+                if (strtolower($data->Event == 'unsubscribe')) {
+                   //清除用户的信息
+                }
     }else{
         return false;
     }
 	}
+}
         public function wxEvent()
     {
         $signature = $_GET["signature"];
