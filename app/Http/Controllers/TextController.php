@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Redis;
 use App\Http\Services\Curl;
 class TextController extends Controller
 {
-    public function index()
+    public function wx()
 	{
         $echostr = request()->get("echostr", "");
         if ($this->checkSignature() && !empty($echostr)) {
