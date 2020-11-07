@@ -11,7 +11,7 @@ class TextController extends Controller
     public function index()
 	{
         $echostr = request()->get("echostr", "");
-        if ($this->checkSignature() && !empty($echostr)) {
+        if ($this->wxEvent() && !empty($echostr)) {
             //第一次接入
             echo $echostr;
         }else{
