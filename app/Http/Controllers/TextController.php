@@ -104,13 +104,13 @@ class TextController extends Controller
            //返回类型
         $msgType="text";
 
-        $xml = "<xml>
-                      <ToUserName><![CDATA[%s]]></ToUserName>
-                      <FromUserName><![CDATA[%s]]></FromUserName>
-                      <CreateTime>%s</CreateTime>
-                      <MsgType><![CDATA[%s]]></MsgType>
-                      <Content><![CDATA[%s]]></Content>
-                    </xml>";
+        $xml = '<xml>
+                      <ToUserName><![CDATA['.$fromUserName.']]></ToUserName>
+                      <FromUserName><![CDATA['.$toUserName.']]></FromUserName>
+                      <CreateTime>'.$time.'</CreateTime>
+                      <MsgType><![CDATA['.$msgType.']]></MsgType>
+                      <Content><![CDATA['.$content.']]></Content>
+                    </xml>';
             //替换掉上面的参数用 sprintf
         echo sprintf($xml,$toUserName,$fromUserName,$time,$msgType,$content);
     }
