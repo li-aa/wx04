@@ -111,7 +111,7 @@ class TextController extends Controller
             Redis::set($key,$token);
             Redis::expire($key,3600);
         }
-            echo "access_token: ".$token;
+            return $token;
     }
 
     public function ccc(){
