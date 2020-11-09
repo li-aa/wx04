@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Services\Curl;
 use App\Model\UserModel;
+use GuzzleHttp\Client;
 class TextController extends Controller
 {
     public function index()
@@ -132,5 +133,17 @@ class TextController extends Controller
         // dd($xml_str);exit;
         $data = simplexml_load_string($xml_str);
         print_r($data);
+    }
+    public function guzzle1(){
+        $appid="wx5e164afbbe916954";
+        $secret="8ef620ee05e3f29c7e4168a0a607d480";
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
+
+        //使用guzzle发起get请求
+        $client = new Client();         //实例化 客户端
+        $response = $client->request('GET',$url,['verify'=>false]);       //发起请求并接收响应
+
+        $json_str = $response->getBody();       //服务器的响应数据
+        echo $json_str;
     }
 }
