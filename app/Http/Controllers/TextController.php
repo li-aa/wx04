@@ -33,7 +33,7 @@ class TextController extends Controller
                     $content = '欢迎关注了我';
                     $token=$this->token();
                     $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
-                    file_put_contents('user_access.log',$url);
+                    file_put_contents('wx_event.log',$url);
                     $user=file_get_contents($url);
                     $user=json_decode($user,true);
                     $wxuser=UserModel::where('openid',$user['openid'])->first();
