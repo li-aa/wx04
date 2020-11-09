@@ -18,4 +18,4 @@ Route::any('/wx/index','TextController@index');
 Route::any('/wx','TextController@wxEvent');
 Route::get('/wx/token','TextController@token');
 
-Route::get('/wx/ccc','TextController@ccc');
+Route::post('/wx/ccc','TextController@ccc');
