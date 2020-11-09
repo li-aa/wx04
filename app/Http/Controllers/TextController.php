@@ -31,7 +31,7 @@ class TextController extends Controller
                     $toUser = $data->FromUserName;
                     $fromUser = $data->ToUserName;
                     $msgType = 'text';
-                    $content = '欢迎关注了我';
+                    $content = '欢迎关注';
                     //根据OPENID获取用户信息（并且入库）
                         //1.获取openid
                     $token=$this->token();
@@ -44,14 +44,17 @@ class TextController extends Controller
                         $content="欢迎回来";
                     }else{
                         $data=[
-                            'subscribe'=>$user['subscribe'],
-                            'openid'=>$user['openid'],
-                            'nickname'=>$user['nickname'],
-                            'sex'=>$user['sex'],
-                            'city'=>$user['city'],
-                            'country'=>$user['country'],
-                            'province'=>$user['province'],
-                            'language'=>$user['language'],
+                                    "subscribe" => $user['subscribe'],
+                                    "openid" => $user["openid"],
+                                    "nickname" => $user["nickname"],
+                                    "sex" => $user["sex"],
+                                    "city" => $user["city"],
+                                    "country" => $user["country"],
+                                    "province" => $user["province"],
+                                    "language" => $user["language"],
+                                    "headimgurl" => $user["headimgurl"],
+                                    "subscribe_time" => $user["subscribe_time"],
+                                    "subscribe_scene" => $user["subscribe_scene"]
                         ];
                         $data=UserModel::insert($data);
                     }
