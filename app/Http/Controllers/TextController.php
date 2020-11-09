@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Services\Curl;
+use App\Model\UserModel;
 class TextController extends Controller
 {
     public function index()
