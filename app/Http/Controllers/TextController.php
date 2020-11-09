@@ -30,16 +30,31 @@ class TextController extends Controller
                     $toUser = $data->FromUserName;
                     $fromUser = $data->ToUserName;
                     $msgType = 'text';
-                    $content = '欢迎关注微信公众账号';
-                    $template = "<xml>
-                            <ToUserName><![CDATA[%s]]></ToUserName>
-                            <FromUserName><![CDATA[%s]]></FromUserName>
-                            <CreateTime>%s</CreateTime>
-                            <MsgType><![CDATA[%s]]></MsgType>
-                            <Content><![CDATA[%s]]></Content>
-                            </xml>";
-                    $info = sprintf($template, $toUser, $fromUser, time(), $msgType, $content);
-                    return $info;
+                    $content = '欢迎关注了我';
+                    $token=$this->access_token();
+                    $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
+                    file_put_contents('user_access.log',$url);
+                    $user=file_get_contents($url);
+                    $user=json_decode($user,true);
+                    $wxuser=UserModel::where('openid',$user['openid'])->first();
+                    if(!empty($wxuser)){
+                        $content="欢迎回来";
+                    }else{
+                        $data=[
+                                    "subscribe" => $user['subscribe'],
+                                    "openid" => $user["openid"],
+                                    "nickname" => $user["nickname"],
+                                    "sex" => $user["sex"],
+                                    "city" => $user["city"],
+                                    "country" => $user["country"],
+                                    "province" => $user["province"],
+                                    "language" => $user["language"],
+                                    "headimgurl" => $user["headimgurl"],
+                                    "subscribe_time" => $user["subscribe_time"],
+                                    "subscribe_scene" => $user["subscribe_scene"]
+                        ];
+                        $data=UserModel::insert($data);
+                    }
                 }
                 if (strtolower($data->Event == 'unsubscribe')) {
                    //清除用户的信息
