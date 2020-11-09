@@ -31,7 +31,7 @@ class TextController extends Controller
                     $fromUser = $data->ToUserName;
                     $msgType = 'text';
                     $content = '欢迎关注了我';
-                    $token=$this->access_token();
+                    $token=$this->token();
                     $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
                     file_put_contents('user_access.log',$url);
                     $user=file_get_contents($url);
