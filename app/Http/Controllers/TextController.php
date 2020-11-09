@@ -23,7 +23,7 @@ class TextController extends Controller
     if( $tmpStr == $signature ){
         $xml_str = file_get_contents('php://input');
         $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
-         if (strtolower($data->MsgType) == "event") {
+            if (strtolower($data->MsgType) == "event") {
                 //关注
                 if (strtolower($data->Event == 'subscribe')) {
                     //回复用户消息(纯文本格式)
@@ -31,6 +31,8 @@ class TextController extends Controller
                     $fromUser = $data->ToUserName;
                     $msgType = 'text';
                     $content = '欢迎关注了我';
+                    //根据OPENID获取用户信息（并且入库）
+                        //1.获取openid
                     $token=$this->token();
                     $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
                     file_put_contents('wx_event.log',$url);
@@ -41,28 +43,35 @@ class TextController extends Controller
                         $content="欢迎回来";
                     }else{
                         $data=[
-                                    "subscribe" => $user['subscribe'],
-                                    "openid" => $user["openid"],
-                                    "nickname" => $user["nickname"],
-                                    "sex" => $user["sex"],
-                                    "city" => $user["city"],
-                                    "country" => $user["country"],
-                                    "province" => $user["province"],
-                                    "language" => $user["language"],
-                                    "headimgurl" => $user["headimgurl"],
-                                    "subscribe_time" => $user["subscribe_time"],
-                                    "subscribe_scene" => $user["subscribe_scene"]
+                            'subscribe'=>$user['subscribe'],
+                            'openid'=>$user['openid'],
+                            'nickname'=>$user['nickname'],
+                            'sex'=>$user['sex'],
+                            'city'=>$user['city'],
+                            'country'=>$user['country'],
+                            'province'=>$user['province'],
+                            'language'=>$user['language'],
                         ];
                         $data=UserModel::insert($data);
                     }
+
+                    //%s代表字符串(发送信息)
+                    $template = "<xml>
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Content><![CDATA[%s]]></Content>
+                            </xml>";
+                    $info = sprintf($template, $toUser, $fromUser, time(), $msgType, $content);
+                    return $info;
                 }
+                //取关
                 if (strtolower($data->Event == 'unsubscribe')) {
-                   //清除用户的信息
+                    //清除用户的信息
                 }
-    }else{
-        return false;
-    }
-	}
+            }	
+        }
 }
         public function wxEvent()
     {
