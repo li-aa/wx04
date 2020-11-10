@@ -20,5 +20,7 @@ Route::get('/wx/token','TextController@token');
 
 Route::post('/wx/ccc','TextController@ccc');
 
-Route::post('/wx/guzzle1','TextController@guzzle1');
-Route::post('/wx/guzzle2','TextController@guzzle2');
+Route::get('/wx/guzzle1','TextController@guzzle1');
+Route::get('/wx/guzzle2','TextController@guzzle2');
+
+Route::get('/wx/menu','TextController@menu');
