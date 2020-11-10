@@ -175,6 +175,7 @@ class TextController extends Controller
     // }
     public function menu(){
         $token = $this->token();
+        // dd($token);exit;
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
@@ -203,7 +204,7 @@ class TextController extends Controller
 
         //判断接口返回
         $info = json_decode($json_data,true);
-        dd($info);exit;
+        // dd($info);exit;
         if($info['errcode'] > 0)        //判断错误码
         {
             // TODO 处理错误
