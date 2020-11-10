@@ -76,7 +76,7 @@ class TextController extends Controller
                     //清除用户的信息
                 }
             }	
-            return true;
+            // return true;
         }
 }
         public function wxEvent()
@@ -98,7 +98,7 @@ class TextController extends Controller
             // 记录日志
             file_put_contents('wx_event.log',$xml_str);
             echo "";
-            return true;
+            // return true;
             die;
         }else{
             echo "";
@@ -176,21 +176,23 @@ class TextController extends Controller
     public function menu(){
         $token = $this->token();
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
+        // dd($url);exit;
         $menu = [
             'button'    => [
                 [
                     'type'  => 'click',
-                    'name'  => 'wx04',
-                    'key'   => 'wx04'
+                    'name'  => 'WX2004',
+                    'key'   => 'k_wx_2004'
                 ],
                 [
                     'type'  => 'view',
-                    'name'  => '百度',
+                    'name'  => 'BAIDU',
                     'url'   => 'https://www.baidu.com'
                 ],
 
             ]
         ];
+        // dd($menu);exit;
         $client = new Client();         //实例化 客户端
         $response = $client->request('POST',$url,[
             'verify'    => false,
@@ -201,7 +203,7 @@ class TextController extends Controller
 
         //判断接口返回
         $info = json_decode($json_data,true);
-
+        dd($info);exit;
         if($info['errcode'] > 0)        //判断错误码
         {
             // TODO 处理错误
