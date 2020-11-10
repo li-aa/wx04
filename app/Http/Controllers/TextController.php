@@ -76,6 +76,7 @@ class TextController extends Controller
                     //清除用户的信息
                 }
             }	
+            return true;
         }
 }
         public function wxEvent()
@@ -97,6 +98,7 @@ class TextController extends Controller
             // 记录日志
             file_put_contents('wx_event.log',$xml_str);
             echo "";
+            return true;
             die;
         }else{
             echo "";
