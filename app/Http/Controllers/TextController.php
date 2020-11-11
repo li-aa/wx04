@@ -96,7 +96,7 @@ class TextController extends Controller
             if(strtolower($data->MsgType)=='text')
             {
 //                file_put_contents('laravel-access.log',$postObj);
-                switch ($postObj->Content) {
+                switch ($data->Content) {
                     case '签到':
                         $content  = '签到成功';
                         $result = $this->text($toUser,$fromUser,$content);
