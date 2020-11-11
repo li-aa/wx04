@@ -75,6 +75,21 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
+                if($postObj->Event == 'CLICK'){
+                    if($postObj->EventKey == 'qian'){
+                        $key = 'USER_SIGN_'.date('Y_m_d',time());// 例子 USER_SIGN_2020_11_11
+//                        echo $key;die;
+                        $content = '签到成功';
+                        $user_sign_info = Redis::zrange($key,0,-1);
+                        if(in_array((string)$toUser,$user_sign_info)){
+                            $content = '已签到,不可重复签到';
+                        }else{
+                            Redis::zadd($key,time(),(string)$toUser);
+                        }
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                    }
+                }
 
             }	
             // return true;
@@ -188,6 +203,11 @@ class TextController extends Controller
                             'key'   => 'k_wx_2004'
                         ],
                         [
+                            'type'  => 'click',
+                            'name'  => '签到',
+                            'key'   => 'qian'
+                        ],
+                        [
                             'type'  => 'view',
                             'name'  => 'aa',
                             'url'   => 'https://www.baidu.com'
@@ -218,13 +238,13 @@ class TextController extends Controller
         $client = new Client();         //实例化 客户端
         $response = $client->request('POST',$url,[
             'verify'    => false,
-            'body'  => json_encode($menu)
+            'body'  => json_encode($menu,JSON_UNESCAPED_UNICODE)
         ]);
 
         $json_data = $response->getBody();
         echo $json_data;exit;
         //判断接口返回
-        $info = json_decode($json_data,true);
+        $info = json_decode($json_data,true,);
         // dd($info);exit;
         if($info['errcode'] > 0)        //判断错误码
         {
