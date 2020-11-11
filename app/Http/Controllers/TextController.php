@@ -181,36 +181,39 @@ class TextController extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
-            'button'    => [
-                    [   
-                       "type"=>"view",
-                       "name"=>"百度",
-                       "url"=>"http://www.baidu.com/"
-                    ],[
-                     'name' => '拍照',
-                         'sub_button'    => [
-                            [
-                                "type"=> "pic_sysphoto", 
-                                "name"=> "系统拍照发图", 
-                                "key"=> "rselfmenu_1_0", 
-                               "sub_button"=> [ ]
-                             ], 
-                            [
-                                "type"=> "pic_photo_or_album", 
-                                "name"=> "拍照或者相册发图", 
-                                "key"=> "rselfmenu_1_1", 
-                                "sub_button"=> [ ]
-                            ], 
-                            [
-                                "type"=> "pic_weixin", 
-                                "name"=> "微信相册发图", 
-                                "key"=> "rselfmenu_1_2", 
-                                "sub_button"=> [ ]
-                            ]
-                        ]
-                        ]
+                    'button'    => [
+                        [
+                            'type'  => 'click',
+                            'name'  => 'WX2004',
+                            'key'   => 'k_wx_2004'
                         ],
-        ];
+                        [
+                            'type'  => 'view',
+                            'name'  => '百度',
+                            'url'   => 'https://www.baidu.com'
+                        ],[
+                        "name"=> "拍照",
+                         "sub_button"=> [
+                             [
+                              "type"=> "pic_sysphoto",
+                              "name"=> "xitong",
+                              "key"=> "rselfmenu_1_0"
+                             ],
+                             [
+                              "type"=> "pic_photo_or_album",
+                              "name"=> "paizhao",
+                              "key"=> "rselfmenu_1_1"
+                             ],
+                             [
+                               "type"=> "pic_weixin",
+                               "name"=> "weixin",
+                               "key"=> "rselfmenu_1_2"
+                             ]
+                          ]
+                        ]
+                    ],
+                ];
+
         // dd($menu);exit;
         $client = new Client();         //实例化 客户端
         $response = $client->request('POST',$url,[
