@@ -75,8 +75,26 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
+                if(strtolower($data->Event == 'text')){
+                    $toUser = $data->FromUserName;
+                    $fromUser = $data->ToUserName;
+                    $time = time();
+                    $msgType = 'text';
+                    $content = $content;
+                    $xml = "<xml>
+                                <ToUserName><![CDATA[".$toUser."]]></ToUserName>
+                                <FromUserName><![CDATA[".$fromUser."]]></FromUserName>
+                                <CreateTime>".$time."</CreateTime>
+                                <MsgType><![CDATA[".$msgType."]]></MsgType>
+                                <Content><![CDATA[".$content."]]></Content>
+                            </xml>";
+                    $info1 = sprintf($xml, $toUser, $fromUser, time(), $msgType, $content);
+                    dd($info1)exit;
+                    return $info;die;
+                }
             }	
             // return true;
+
         }
 }
         public function wxEvent()
@@ -111,7 +129,7 @@ class TextController extends Controller
         $token = Redis::get($key);
         if($token)
         {
-            echo "有缓存";echo '</br>';
+            // echo "有缓存";echo '</br>';
 
         }else{
 
@@ -180,16 +198,18 @@ class TextController extends Controller
         // dd($url);exit;
         $menu = [
             'button'    => [
-                [
-                    'type'  => 'click',
-                    'name'  => 'WX2004',
-                    'key'   => 'k_wx_2004'
-                ],
-                [
-                    'type'  => 'view',
-                    'name'  => 'BAIDU',
-                    'url'   => 'https://www.baidu.com'
-                ],
+                        "name":"菜单",
+                   "sub_button":[
+                   {    
+                       "type":"view",
+                       "name":"百度",
+                       "url":"http://www.baidu.com/"
+                    },
+                    {
+                       "type":"click",
+                       "name":"赞一下我们",
+                       "key":"V1001_GOOD"
+                    }]
 
             ]
         ];
@@ -212,4 +232,5 @@ class TextController extends Controller
             // TODO 创建菜单成功逻辑
         }
     }
+
 }
