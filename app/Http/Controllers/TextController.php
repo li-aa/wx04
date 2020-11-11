@@ -75,8 +75,8 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
-                if($postObj->Event == 'click'){
-                    if($postObj->EventKey == 'qian'){
+                if($data->Event == 'click'){
+                    if($data->EventKey == 'qian'){
                         $key = 'qian_'.date('Y_m_d',time());// 例子 USER_SIGN_2020_11_11
 //                        echo $key;die;
                         $content = '签到成功';
