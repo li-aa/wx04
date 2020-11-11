@@ -75,35 +75,9 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
-                if($data->Event == 'click'){
-                    if($data->EventKey == 'qian'){
-                        $key = 'qian_'.date('Y_m_d',time());// 例子 USER_SIGN_2020_11_11
-//                        echo $key;die;
-                        $content = '签到成功';
-                        $user_sign_info = Redis::zrange($key,0,-1);
-                        if(in_array((string)$toUser,$user_sign_info)){
-                            $content = '已签到,不可重复签到';
-                        }else{
-                            Redis::zadd($key,time(),(string)$toUser);
-                        }
-                        $result = $this->text($toUser,$fromUser,$content);
-                        return $result;
-                    }
-                }
 
             }	
             // return true;
-            if(strtolower($data->MsgType)=='text')
-            {
-//                file_put_contents('laravel-access.log',$postObj);
-                switch ($data->Content) {
-                    case '签到':
-                        $content  = '签到成功';
-                        $result = $this->text($toUser,$fromUser,$content);
-                        return $result;
-                        break;
-                    }
-                }
         }
 }
         public function wxEvent()
@@ -225,6 +199,11 @@ class TextController extends Controller
                               "key"=> "rselfmenu_1_0"
                              ],
                              [
+                            'type'  => 'view',
+                            'name'  => '商城',
+                            'url'   => 'http://pcl.mazhanliang.top'
+                        ],
+                            [
                             'type'  => 'click',
                             'name'  => '签到',
                             'key'   => 'qian'
