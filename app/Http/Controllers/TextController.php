@@ -182,8 +182,6 @@ class TextController extends Controller
         // dd($url);exit;
         $menu = [
             'button'    => [
-                "name"=>"菜单",
-                    "sub_button"=>[
                     [   
                        "type"=>"view",
                        "name"=>"百度",
@@ -194,9 +192,6 @@ class TextController extends Controller
                        "name"=>"赞一下我们",
                        "key"=>"V1001_GOOD"
                     ],[
-            
-                                "namea"=> "发图", 
-                        "sub_button"=> [
                             [
                                 "type"=> "pic_sysphoto", 
                                 "name"=> "系统拍照发图", 
@@ -215,8 +210,6 @@ class TextController extends Controller
                                 "key"=> "rselfmenu_1_2", 
                                 "sub_button"=> [ ]
                             ]
-                        ]
-                        ]
                         ]
                         ],
         ];
