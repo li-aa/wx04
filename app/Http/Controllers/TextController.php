@@ -203,11 +203,6 @@ class TextController extends Controller
                             'key'   => 'k_wx_2004'
                         ],
                         [
-                            'type'  => 'click',
-                            'name'  => '签到',
-                            'key'   => 'qian'
-                        ],
-                        [
                             'type'  => 'view',
                             'name'  => 'aa',
                             'url'   => 'https://www.baidu.com'
@@ -219,6 +214,11 @@ class TextController extends Controller
                               "name"=> "xitong",
                               "key"=> "rselfmenu_1_0"
                              ],
+                             [
+                            'type'  => 'click',
+                            'name'  => '签到',
+                            'key'   => 'qian'
+                        ],
                              [
                               "type"=> "pic_photo_or_album",
                               "name"=> "paizhao",
