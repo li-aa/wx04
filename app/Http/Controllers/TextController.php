@@ -190,11 +190,6 @@ class TextController extends Controller
                              'type'  => 'view',
                             'name'  => '商城',
                             'url'   => 'http://pcl.mazhanliang.top'
-                        ],
-                        [
-                             'type'  => 'view',
-                            'name'  => '京东',
-                            'url'   => 'https://www.jd.com/'
                         ],[
                         "name"=> "ee",
                          "sub_button"=> [
@@ -203,6 +198,12 @@ class TextController extends Controller
                               "name"=> "xitong",
                               "key"=> "rselfmenu_1_0"
                              ],
+
+                        [
+                             'type'  => 'view',
+                            'name'  => '京东',
+                            'url'   => 'https://www.jd.com/'
+                        ],
                             [
                             'type'  => 'click',
                             'name'  => '签到',
