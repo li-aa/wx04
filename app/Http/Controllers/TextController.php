@@ -187,7 +187,7 @@ class TextController extends Controller
                        "name"=>"百度",
                        "url"=>"http://www.baidu.com/"
                     ],[
-                     'name' => '拍照'
+                     'name' => '拍照',
                          'sub_button'    => [
                             [
                                 "type"=> "pic_sysphoto", 
@@ -208,8 +208,8 @@ class TextController extends Controller
                                 "sub_button"=> [ ]
                             ]
                         ]
-                        ],
                         ]
+                        ],
         ];
         // dd($menu);exit;
         $client = new Client();         //实例化 客户端
