@@ -192,6 +192,7 @@ class TextController extends Controller
                        "name"=>"赞一下我们",
                        "key"=>"V1001_GOOD"
                     ],[
+                         'sub_button'    => [
                             [
                                 "type"=> "pic_sysphoto", 
                                 "name"=> "系统拍照发图", 
@@ -212,6 +213,7 @@ class TextController extends Controller
                             ]
                         ]
                         ],
+                        ]
         ];
         // dd($menu);exit;
         $client = new Client();         //实例化 客户端
