@@ -189,10 +189,10 @@ class TextController extends Controller
                         ],
                         [
                             'type'  => 'view',
-                            'name'  => '百度',
+                            'name'  => 'aa',
                             'url'   => 'https://www.baidu.com'
                         ],[
-                        "name"=> "拍照",
+                        "name"=> "ee",
                          "sub_button"=> [
                              [
                               "type"=> "pic_sysphoto",
@@ -222,7 +222,7 @@ class TextController extends Controller
         ]);
 
         $json_data = $response->getBody();
-
+        echo $json_data;exit;
         //判断接口返回
         $info = json_decode($json_data,true);
         // dd($info);exit;
