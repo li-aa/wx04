@@ -77,7 +77,7 @@ class TextController extends Controller
                 }
                 if($postObj->Event == 'CLICK'){
                     if($postObj->EventKey == 'qian'){
-                        $key = 'USER_SIGN_'.date('Y_m_d',time());// 例子 USER_SIGN_2020_11_11
+                        $key = 'qian_'.date('Y_m_d',time());// 例子 USER_SIGN_2020_11_11
 //                        echo $key;die;
                         $content = '签到成功';
                         $user_sign_info = Redis::zrange($key,0,-1);
