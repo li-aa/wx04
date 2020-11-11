@@ -75,23 +75,6 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
-                if(strtolower($data->Event == 'text')){
-                    $toUser = $data->FromUserName;
-                    $fromUser = $data->ToUserName;
-                    $time = time();
-                    $msgType = 'text';
-                    $content = $content;
-                    $xml = "<xml>
-                                <ToUserName><![CDATA[".$toUser."]]></ToUserName>
-                                <FromUserName><![CDATA[".$fromUser."]]></FromUserName>
-                                <CreateTime>".$time."</CreateTime>
-                                <MsgType><![CDATA[".$msgType."]]></MsgType>
-                                <Content><![CDATA[".$content."]]></Content>
-                            </xml>";
-                    $info1 = sprintf($xml, $toUser, $fromUser, time(), $msgType, $content);
-                    dd($info1)exit;
-                    return $info;die;
-                }
             }	
             // return true;
 
@@ -193,17 +176,17 @@ class TextController extends Controller
     // }
     public function menu(){
         $token = $this->token();
-        // dd($token);exit;
+        dd($token);exit;
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
-     "button":[
-     {  
+            'button'    => [
+            {   
           "type":"click",
           "name":"今日歌曲",
           "key":"V1001_TODAY_MUSIC"
-      },
-      {
+        },
+            {
            "name":"菜单",
            "sub_button":[
            {    
@@ -216,7 +199,7 @@ class TextController extends Controller
                "name":"赞一下我们",
                "key":"V1001_GOOD"
             }]
-            }]
+       }]
         ];
         // dd($menu);exit;
         $client = new Client();         //实例化 客户端
