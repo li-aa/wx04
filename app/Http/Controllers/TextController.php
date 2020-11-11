@@ -93,7 +93,17 @@ class TextController extends Controller
 
             }	
             // return true;
-
+            if(strtolower($data->MsgType)=='text')
+            {
+//                file_put_contents('laravel-access.log',$postObj);
+                switch ($postObj->Content) {
+                    case '签到':
+                        $content  = '签到成功';
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    }
+                }
         }
 }
         public function wxEvent()
