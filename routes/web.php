@@ -24,3 +24,5 @@ Route::get('/wx/guzzle1','TextController@guzzle1');
 Route::get('/wx/guzzle2','TextController@guzzle2');
 
 Route::get('/wx/menu','TextController@menu');
+
+Route::get('/wx/media','TextController@media');

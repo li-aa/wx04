@@ -243,5 +243,11 @@ class TextController extends Controller
             // TODO 创建菜单成功逻辑
         }
     }
-
+    public function media(){
+        $token = $this->token();
+        $media_id = '';
+        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id=';
+         file_put_contents('wx_event.log',$url);   
+        dd($url);
+    }
 }
