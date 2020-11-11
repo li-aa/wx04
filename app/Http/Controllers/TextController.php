@@ -187,9 +187,9 @@ class TextController extends Controller
                             'key'   => 'k_wx_2004'
                         ],
                         [
-                            'type'  => 'view',
-                            'name'  => 'aa',
-                            'url'   => 'https://www.baidu.com'
+                             'type'  => 'view',
+                            'name'  => '商城',
+                            'url'   => 'http://pcl.mazhanliang.top'
                         ],[
                         "name"=> "ee",
                          "sub_button"=> [
@@ -198,11 +198,6 @@ class TextController extends Controller
                               "name"=> "xitong",
                               "key"=> "rselfmenu_1_0"
                              ],
-                             [
-                            'type'  => 'view',
-                            'name'  => '商城',
-                            'url'   => 'http://pcl.mazhanliang.top'
-                        ],
                             [
                             'type'  => 'click',
                             'name'  => '签到',
