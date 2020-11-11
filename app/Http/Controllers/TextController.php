@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Services\Curl;
 use App\Model\UserModel;
+use App\Model\MediaModel;
 use GuzzleHttp\Client;
 class TextController extends Controller
 {
@@ -37,7 +38,7 @@ class TextController extends Controller
                         //1.获取openid
                     $token=$this->token();
                     $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
-                    // file_put_contents('wx_event.log',$url);
+                    file_put_contents('wx_event.log',$url);
                     $user=file_get_contents($url);
                     $user=json_decode($user,true);
                     $wxuser=UserModel::where('openid',$user['openid'])->first();
@@ -82,27 +83,59 @@ class TextController extends Controller
 }
         public function wxEvent()
     {
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
-
-        $token = 'TOKEN';
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
-
-        if( $tmpStr == $signature ){            //验证通过
+               //验证通过
             // 1 接收数据
             $xml_str = file_get_contents("php://input");
+            $log_str = date('Y-m-d H:i:s') . ' >>>>>  ' . $xml_str ." \n\n";
+            file_put_contents('wx_event.log',$log_str,FILE_APPEND);
+            // 将接收来的数据转化为对象
+            $obj = simplexml_load_string($xml_str);//将文件转换成 对象
+            $this->xml_obj = $obj;
+            $msg_type = $obj->MsgType;  
+             switch($msg_type)
+        {
+            case 'event' :
+                break;
+            case 'text' :           //处理文本信息
+                $this->textHandler();
+                break;
+            case 'image' :          // 处理图片信息
+                $this->imageHandler($obj);
+                break;
+            case 'voice' :          // 语音
+                $this->voiceHandler();
+                break;
+            case 'video' :          // 视频
+                $this->videoHandler();
+                break;
+            default:
+                echo 'default';
+            }
+            echo "";
+        }
+    
+        //图片
 
-            // 记录日志
-            file_put_contents('wx_event.log',$xml_str);
-            echo "";
-            // return true;
-            die;
+        protected function imageHandler($obj){
+
+        //入库
+
+        //下载素材
+        $token = $this->token();
+        $media_id = $obj->MediaId;
+        //dd($media_id);exit;
+        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
+        $img = file_get_contents($url);
+        // dd($img);exit;
+        // $media_path = 'upload/good.jpg';
+        $res = file_put_contents("kkk.jpg",$img);
+        // dd($res);exit;
+        // return $res;
+        if($res)
+        {
+            echo "保存成功";
         }else{
-            echo "";
+            // TODO 保存失败
         }
     }
     public function token(){
@@ -245,9 +278,10 @@ class TextController extends Controller
     }
     public function media(){
         $token = $this->token();
-        $media_id = '';
-        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id=';
-         file_put_contents('wx_event.log',$url);   
-        dd($url);
+        $media_id = 'cgIRupuuN4Fy0legvyObm4_3SfatYjHd7Gmbp5fuXi2pnWthnO-y4ST04L33bUgW';
+        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
+       $img = file_get_contents($url);
+        $res = file_put_contents('good.jpg',$img);
+        var_dump($res);
     }
 }
