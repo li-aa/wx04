@@ -177,7 +177,7 @@ class TextController extends Controller
     // }
     public function menu(){
         $token = $this->token();
-        dd($token);exit;
+        // dd($token);exit;
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
@@ -193,9 +193,34 @@ class TextController extends Controller
                        "type"=>"click",
                        "name"=>"赞一下我们",
                        "key"=>"V1001_GOOD"
-                    ],
-                    ]
-            ]
+                    ],[
+            
+                'button'    => [
+                                "namea"=> "发图", 
+                        "sub_button"=> [
+                            [
+                                "type"=> "pic_sysphoto", 
+                                "name"=> "系统拍照发图", 
+                                "key"=> "rselfmenu_1_0", 
+                               "sub_button"=> [ ]
+                             ], 
+                            [
+                                "type"=> "pic_photo_or_album", 
+                                "name"=> "拍照或者相册发图", 
+                                "key"=> "rselfmenu_1_1", 
+                                "sub_button"=> [ ]
+                            ], 
+                            [
+                                "type"=> "pic_weixin", 
+                                "name"=> "微信相册发图", 
+                                "key"=> "rselfmenu_1_2", 
+                                "sub_button"=> [ ]
+                            ]
+                        ]
+                        ]
+                        ]
+                        ]
+                        ],
         ];
         // dd($menu);exit;
         $client = new Client();         //实例化 客户端
