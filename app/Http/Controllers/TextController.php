@@ -197,21 +197,26 @@ class TextController extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
-            'button'    => [
-                        "name":"菜单",
-                   "sub_button":[
-                   {    
-                       "type":"view",
-                       "name":"百度",
-                       "url":"http://www.baidu.com/"
-                    },
-                    {
-                       "type":"click",
-                       "name":"赞一下我们",
-                       "key":"V1001_GOOD"
-                    }]
-
-            ]
+     "button":[
+     {  
+          "type":"click",
+          "name":"今日歌曲",
+          "key":"V1001_TODAY_MUSIC"
+      },
+      {
+           "name":"菜单",
+           "sub_button":[
+           {    
+               "type":"view",
+               "name":"百度",
+               "url":"http://www.baidu.com/"
+            },
+            {
+               "type":"click",
+               "name":"赞一下我们",
+               "key":"V1001_GOOD"
+            }]
+            }]
         ];
         // dd($menu);exit;
         $client = new Client();         //实例化 客户端
