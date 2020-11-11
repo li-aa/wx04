@@ -186,12 +186,8 @@ class TextController extends Controller
                        "type"=>"view",
                        "name"=>"百度",
                        "url"=>"http://www.baidu.com/"
-                    ],
-                    [
-                       "type"=>"click",
-                       "name"=>"赞一下我们",
-                       "key"=>"V1001_GOOD"
                     ],[
+                     'name' => '拍照'
                          'sub_button'    => [
                             [
                                 "type"=> "pic_sysphoto", 
