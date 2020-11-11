@@ -195,7 +195,6 @@ class TextController extends Controller
                        "key"=>"V1001_GOOD"
                     ],[
             
-                'button'    => [
                                 "namea"=> "发图", 
                         "sub_button"=> [
                             [
@@ -216,7 +215,6 @@ class TextController extends Controller
                                 "key"=> "rselfmenu_1_2", 
                                 "sub_button"=> [ ]
                             ]
-                        ]
                         ]
                         ]
                         ]
