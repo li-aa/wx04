@@ -78,7 +78,7 @@ class TextController extends Controller
                 }
 
             }	
-            // return true;
+            return true;
         }
 }
         public function wxEvent()
@@ -172,8 +172,8 @@ class TextController extends Controller
         print_r($data);
     }
     public function guzzle1(){
-        $appid="wx5e164afbbe916954";
-        $secret="8ef620ee05e3f29c7e4168a0a607d480";
+        $appid="wxa82a04c5cb10790b";
+        $secret="bc9aecbb5c20e9a4c85d43edc71bed13";
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
 
         //使用guzzle发起get请求
@@ -209,7 +209,7 @@ class TextController extends Controller
     // }
     public function menu(){
         $token = $this->token();
-        // dd($token);exit;
+        dd($token);exit;
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
@@ -233,9 +233,9 @@ class TextController extends Controller
                              ],
 
                         [
-                             'type'  => 'view',
-                            'name'  => '京东',
-                            'url'   => 'https://www.jd.com/'
+                            'type'  => 'view',
+                            'name'  => '天气',
+                            'url'   => 'http://wx.2004.com/wx/tianqi'
                         ],
                             [
                             'type'  => 'click',
@@ -278,9 +278,9 @@ class TextController extends Controller
     }
     public function media(){
         $token = $this->token();
-        $media_id = 'cgIRupuuN4Fy0legvyObm4_3SfatYjHd7Gmbp5fuXi2pnWthnO-y4ST04L33bUgW';
+        $media_id = '1YxPJimb14FB0GVtO7vpX5ye82LZwkMCT5UBONQhMJSMac1EBKD0X5L8fP10KzPX';
         $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
-       $img = file_get_contents($url);
+        $img = file_get_contents($url);
         $res = file_put_contents('good.jpg',$img);
         var_dump($res);
     }
