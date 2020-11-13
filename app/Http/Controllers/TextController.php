@@ -48,24 +48,29 @@ class TextController extends Controller
                 }
 
             }
-                if (strtolower($data->Event == 'subscribe')) {
-                    //回复用户消息(纯文本格式)
-                    $toUser = $data->FromUserName;
-                    $fromUser = $data->ToUserName;
-                    $msgType = 'text';
-                    $content = '欢迎关注';
-                    //根据OPENID获取用户信息（并且入库）
-                        //1.获取openid
-                    $token=$this->token();
-                    $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
-                    file_put_contents('wx_event.log',$url);
-                    $user=file_get_contents($url);
-                    $user=json_decode($user,true);
-                    $wxuser=UserModel::where('openid',$user['openid'])->first();
-                    if(!empty($wxuser)){
-                        $content="欢迎回来";
-                    }else{
-                        $data=[
+            switch ($obj->MsgType) {
+                case "event":
+                    if ($obj->Event == "subscribe") {
+                        //用户扫码的 openID
+                        $openid = $obj->FromUserName;//获取发送方的 openid
+                        $access_token = $this->get_access_token();//获取token,
+                        $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $openid . "&lang=zh_CN";
+                        //掉接口
+                        $user = json_decode($this->http_get($url), true);//跳方法 用get  方式调第三方类库
+                        // $this->writeLog($fens);
+                        if (isset($user["errcode"])) {
+                            $this->writeLog("获取用户信息失败");
+                        } else {
+                            //说明查找成功 //可以加入数据库
+                            $res = UserModel::where("openid", $openid)->first();//查看用户表中是否有该用户,查看用户是否关注过
+                            if ($res) {//说明该用户关注过
+                                $openid = $obj->FromUserName;
+                                $res = UserModel::where("openid", $openid)->first();
+                                $res->subscribe = 1;
+                                $res->save();
+                                $content = "欢迎您再次关注！";
+                            } else {
+                                $data = [
                                     "subscribe" => $user['subscribe'],
                                     "openid" => $user["openid"],
                                     "nickname" => $user["nickname"],
@@ -77,21 +82,21 @@ class TextController extends Controller
                                     "headimgurl" => $user["headimgurl"],
                                     "subscribe_time" => $user["subscribe_time"],
                                     "subscribe_scene" => $user["subscribe_scene"]
-                        ];
-                        $data=UserModel::insert($data);
+                                ];
+                                UserModel::create($data);
+                                $content = "欢迎关注";
+                            }
+                        }
                     }
-
-                    //%s代表字符串(发送信息)
-                    $template = "<xml>
-                            <ToUserName><![CDATA[%s]]></ToUserName>
-                            <FromUserName><![CDATA[%s]]></FromUserName>
-                            <CreateTime>%s</CreateTime>
-                            <MsgType><![CDATA[%s]]></MsgType>
-                            <Content><![CDATA[%s]]></Content>
-                            </xml>";
-                    $info = sprintf($template, $toUser, $fromUser, time(), $msgType, $content);
-                    return $info;
-                }
+                    // 取消关注
+                    if ($obj->Event == "unsubscribe") {
+                        $openid = $obj->FromUserName;
+                        $res = UserModel::where("openid", $openid)->first();
+                        $res->subscribe = 0;
+                        $res->save();
+                        $content="";
+                    }
+                    break;
         }
 
     }   
