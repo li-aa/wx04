@@ -275,9 +275,9 @@ class TextController extends Controller
                         "name"=> "ee",
                          "sub_button"=> [
                              [
-                              "type"=> "pic_sysphoto",
-                              "name"=> "xitong",
-                              "key"=> "rselfmenu_1_0"
+                              "type"=> "view",
+                              "name"=> "百度",
+                              "key"=> "http://www.baidu.com."
                              ],
 
                         [
