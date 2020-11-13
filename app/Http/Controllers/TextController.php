@@ -77,7 +77,7 @@ class TextController extends Controller
                     //清除用户的信息
                 }
             }
-                if($data->EventKey=="qiandao") {
+                if($data->EventKey=="qian") {
                  $key = $data->FromUserName;
                  $times = date("Y-m-d", time());
                  $date = Redis::zrange($key, 0, -1);
