@@ -13,21 +13,41 @@ class TextController extends Controller
 {
     public function index()
     {
-    $signature = $_GET["signature"];
-    $timestamp = $_GET["timestamp"];
-    $nonce = $_GET["nonce"];
-    
-    $token = 'TOKEN';
-    $tmpArr = array($token, $timestamp, $nonce);
-    sort($tmpArr, SORT_STRING);
-    $tmpStr = implode( $tmpArr );
-    $tmpStr = sha1( $tmpStr );
+         $echostr = request()->get("echostr", "");
+        if ($this->checkSignature() && !empty($echostr)) {
 
-        $xml_str = file_get_contents('php://input');
-        $data = simplexml_load_string($xml_str,"SimpleXMLElement",LIBXML_NOCDATA);
-          // file_put_contents("shuju.txt",$xml_str,FILE_APPEND);
-            if (strtolower($data->MsgType) == "event") {
-                //关注
+            //第一次接入
+            echo $echostr;
+        }else{
+            $str=file_get_contents("php://input");
+            $obj = simplexml_load_string($str,"SimpleXMLElement",LIBXML_NOCDATA);
+            $content="鹅鹅鹅，尚未开发....见谅,当前机器人已开发,您可以用输入或发送语音来与机器人进行聊天,输入“天气:地区”(如 天气:邯郸) 或 地区 来进行查询天气 ";
+
+            file_put_contents("shuju.txt",$str,FILE_APPEND);
+                if($obj->EventKey=="qian") {
+                 $key = $obj->FromUserName;
+                 $times = date("Y-m-d", time());
+                 $date = Redis::zrange($key, 0, -1);
+                if ($date) {
+                     $date = $date[0];
+                 }
+                if ($date == $times) {
+                     $content = "您今日已经签到过了!";
+                } else {
+                         $zcard = Redis::zcard($key);
+                    if ($zcard >= 1) {
+                        Redis::zremrangebyrank($key, 0, 0);
+                    }
+                    $keys = json_decode(json_encode($obj),true);
+
+
+                    $keys = $keys['FromUserName'];
+                    $zincrby = Redis::zincrby($key, 1, $keys);
+                    $zadd = Redis::zadd($key, $zincrby, $times);
+                    $content = "签到成功您以积累签到" . $zincrby . "天!";
+                }
+
+            }
                 if (strtolower($data->Event == 'subscribe')) {
                     //回复用户消息(纯文本格式)
                     $toUser = $data->FromUserName;
@@ -72,46 +92,28 @@ class TextController extends Controller
                     $info = sprintf($template, $toUser, $fromUser, time(), $msgType, $content);
                     return $info;
                 }
-                //取关
-                if (strtolower($data->Event == 'unsubscribe')) {
-                    //清除用户的信息
-                }
-                if($data->EventKey=="qian") {
-                 $key = $data->FromUserName;
-                 $times = date("Y-m-d", time());
-                 $date = Redis::zrange($key, 0, -1);
-                if ($date) {
-                     $date = $date[0];
-                 }
-                if ($date == $times) {
-                     $content = "您今日已经签到过了!";
-                } else {
-                         $zcard = Redis::zcard($key);
-                    if ($zcard >= 1) {
-                        Redis::zremrangebyrank($key, 0, 0);
-                    }
-                    $keys = json_decode(json_encode($obj),true);
+        }
 
+    }   
+            // return true;
+    private function checkSignature()
+    {
+        $signature = request()->get("signature");
+        $timestamp = request()->get("timestamp");
+        $nonce = request()->get("nonce");
 
-                    $keys = $keys['FromUserName'];
-                    $zincrby = Redis::zincrby($key, 1, $keys);
-                    $zadd = Redis::zadd($key, $zincrby, $times);
-                    $score=Redis::incrby($key."_score",10);
-                    $content = "签到成功您以积累签到" . $zincrby . "天,积累获得".$score."积分";
-                }
+        $token ="TOKEN";
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
 
-            }
-
-            }
-            
         if( $tmpStr == $signature ){
-            echo $echostr;die;
+            return true;
         }else{
             return false;
         }
-            }   
-            // return true;
-
+    }
     private function text($toUser,$fromUser,$content)
     {
         $template = "<xml>
