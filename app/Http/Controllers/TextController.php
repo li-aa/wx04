@@ -219,8 +219,8 @@ class TextController extends Controller
         dd($data);
     }
     public function guzzle1(){
-        $appid="wxa82a04c5cb10790b";
-        $secret="bc9aecbb5c20e9a4c85d43edc71bed13";
+        $appid="wx5e164afbbe916954";
+        $secret="8ef620ee05e3f29c7e4168a0a607d480";
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
         // dd($url);exit;
         //使用guzzle发起get请求
