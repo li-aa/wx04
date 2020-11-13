@@ -77,19 +77,21 @@ class TextController extends Controller
                     //清除用户的信息
                 }
                     if($data->Event == 'click'){
-                    if($data->EventKey == 'qian'){
-                        $key = 'qian_'.date('Y_m_d',time());// 例子 USER_SIGN_2020_11_11
-//                        echo $key;die;
-                        $content = '签到成功';
-                        $user_sign_info = Redis::zrange($key,0,-1);
-                        if(in_array((string)$toUser,$user_sign_info)){
-                            $content = '已签到,不可重复签到';
-                        }else{
-                            Redis::zadd($key,time(),(string)$toUser);
-                        }
-                        $result = $this->text($toUser,$fromUser,$content);
-                        return $result;
-                    }
+                        $this->clickhandler($data);
+                        switch ($data->EventKey){
+                            case "qian";  //二级签到菜单
+                                $key='qian'.date('Y-m-d',time());
+                                $content="签到成功";
+                                $touser_info=Redis::zrange($key,0,-1);//获取集合中的部分元素
+                                if(in_array((string)$toUser,$touser_info)){
+                                    $content="已经签到,不能重复";
+                                }else{
+                                    Redis::zAdd($key,time(),(string)$toUser);//添加一个元素
+                                }
+                                $result=$this->text($toUser,$fromUser,$content);
+                                return $result;
+                                break;
+                            }
                 }
             }
             if(strtolower($data->MsgType)=='text')
@@ -136,7 +138,14 @@ class TextController extends Controller
         }
             }   
             // return true;
-        
+            protected function clickhandler($data){
+            $data=[
+            'create_time'=>$data->CreateTime,
+            'media_type'=>$data->Event,
+            'openid'=>$data->FromUserName,
+            ];
+        MediaModel::insert($data);
+    }
 
     private function text($toUser,$fromUser,$content)
     {
