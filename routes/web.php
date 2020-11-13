@@ -14,11 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::any('/wx/index','TextController@index');
+Route::get('/wx/index','TextController@index');
 Route::any('/wx/wxEvent','TextController@wxEvent');
-Route::get('/wx/token','TextController@token');
+Route::get('token','TextController@token');
 
-Route::post('/wx/ccc','TextController@ccc');
+Route::get('/wx/ccc','TextController@ccc');
 
 Route::get('/wx/guzzle1','TextController@guzzle1');
 Route::get('/wx/guzzle2','TextController@guzzle2');
@@ -26,3 +26,6 @@ Route::get('/wx/guzzle2','TextController@guzzle2');
 Route::get('/wx/menu','TextController@menu');
 
 Route::get('/wx/media','TextController@media');
+Route::get('/wx/wang','TextController@wang');
+Route::get('/wx/media_insert','TextController@media_insert');
+Route::get('/wx/getWxUserInfo','TextController@getWxUserInfo');

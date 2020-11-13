@@ -12,20 +12,20 @@ use GuzzleHttp\Client;
 class TextController extends Controller
 {
     public function index()
-	{
+    {
     $signature = $_GET["signature"];
     $timestamp = $_GET["timestamp"];
     $nonce = $_GET["nonce"];
-	
+    
     $token = 'TOKEN';
     $tmpArr = array($token, $timestamp, $nonce);
     sort($tmpArr, SORT_STRING);
     $tmpStr = implode( $tmpArr );
     $tmpStr = sha1( $tmpStr );
-    
-    if( $tmpStr == $signature ){
+
         $xml_str = file_get_contents('php://input');
-        $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $data = simplexml_load_string($xml_str,"SimpleXMLElement",LIBXML_NOCDATA);
+          // file_put_contents("shuju.txt",$xml_str,FILE_APPEND);
             if (strtolower($data->MsgType) == "event") {
                 //关注
                 if (strtolower($data->Event == 'subscribe')) {
@@ -76,62 +76,90 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
+            }
+                if($data->EventKey=="qiandao") {
+                 $key = $data->FromUserName;
+                 $times = date("Y-m-d", time());
+                 $date = Redis::zrange($key, 0, -1);
+                if ($date) {
+                     $date = $date[0];
+                 }
+                if ($date == $times) {
+                     $content = "您今日已经签到过了!";
+                } else {
+                         $zcard = Redis::zcard($key);
+                    if ($zcard >= 1) {
+                        Redis::zremrangebyrank($key, 0, 0);
+                    }
+                    $keys = json_decode(json_encode($obj),true);
 
-            }	
-            // return true;
-        }
-}
 
-    private function check()
-    {
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
+                    $keys = $keys['FromUserName'];
+                    $zincrby = Redis::zincrby($key, 1, $keys);
+                    $zadd = Redis::zadd($key, $zincrby, $times);
+                    $content = "签到成功您以积累签到" . $zincrby . "天!";
+                }
 
-        $token = 'TOKEN';
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
+            }
+            if(strtolower($data->MsgType)=='text')
+            {
+//                file_put_contents('laravel-access.log',$postObj);
+                switch ($postObj->Content) {
+                    case '时间':
+                        $content  = date('Y-m-d H:i:s',time());
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    case '图文':
+                        $title = '图文测试';
+                        $description = '暂无图文描述';
+                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
+                        $url = 'https://www.baidu.com';
+                        $result = $this->image_text($toUser,$fromUser,$title,$description,$content,$url);
+                        return $result;
+                        break;
+                    case '天气':
+                        $key = '4fdc691ce1494fa6a3ab6d12721ad263';
+                        $uri = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
+                        $api = file_get_contents($uri);
+                        $api = json_decode($api,true);
+                        $content = "天气状态：".$api['now']['text'].'
+风向：'.$api['now']['windDir'];
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    default:
+                        $app_url = 'http://wx.2004.com';
+                        $callback = file_get_contents($app_url.'/wx/turing?info='.$postObj->Content);
+                        $content = $callback;
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                }
 
+            }
         if( $tmpStr == $signature ){
-            return true;
+            echo $echostr;die;
         }else{
             return false;
         }
-    }
-        public function wxEvent()
+            }   
+            // return true;
+        
+
+    private function text($toUser,$fromUser,$content)
     {
-               //验证通过
-            // 1 接收数据
-            $xml_str = file_get_contents("php://input");
-            $log_str = date('Y-m-d H:i:s') . ' >>>>>  ' . $xml_str ." \n\n";
-            file_put_contents('wx_event.log',$log_str,FILE_APPEND);
-            // 将接收来的数据转化为对象
-            $obj = simplexml_load_string($xml_str);//将文件转换成 对象
-            $this->xml_obj = $obj;
-            $msg_type = $obj->MsgType;  
-             switch($msg_type)
-        {
-            case 'event' :
-                break;
-            case 'text' :           //处理文本信息
-                $this->textHandler();
-                break;
-            case 'image' :          // 处理图片信息
-                $this->imageHandler($obj);
-                break;
-            case 'voice' :          // 语音
-                $this->voiceHandler();
-                break;
-            case 'video' :          // 视频
-                $this->videoHandler();
-                break;
-            default:
-                echo 'default';
-            }
-            echo "";
-        }
+        $template = "<xml>
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Content><![CDATA[%s]]></Content>
+                            </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
+        return $info;
+    }
+
     
         //图片
 
@@ -148,7 +176,7 @@ class TextController extends Controller
         // dd($img);exit;
         // $media_path = 'upload/good.jpg';
         $res = file_put_contents("kkk.jpg",$img);
-        // dd($res);exit;
+        dd($res);exit;
         // return $res;
         if($res)
         {
@@ -188,13 +216,13 @@ class TextController extends Controller
         $xml_str = file_get_contents("php://input");
         // dd($xml_str);exit;
         $data = simplexml_load_string($xml_str);
-        print_r($data);
+        dd($data);
     }
     public function guzzle1(){
         $appid="wxa82a04c5cb10790b";
         $secret="bc9aecbb5c20e9a4c85d43edc71bed13";
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
-
+        // dd($url);exit;
         //使用guzzle发起get请求
         $client = new Client();         //实例化 客户端
         $response = $client->request('GET',$url,['verify'=>false]);       //发起请求并接收响应
@@ -228,7 +256,7 @@ class TextController extends Controller
     // }
     public function menu(){
         $token = $this->token();
-        dd($token);exit;
+        // dd($token);exit;
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
@@ -242,7 +270,8 @@ class TextController extends Controller
                              'type'  => 'view',
                             'name'  => '商城',
                             'url'   => 'http://pcl.mazhanliang.top'
-                        ],[
+                        ],
+                        [
                         "name"=> "ee",
                          "sub_button"=> [
                              [
@@ -254,18 +283,13 @@ class TextController extends Controller
                         [
                             'type'  => 'view',
                             'name'  => '天气',
-                            'url'   => 'http://wx.2004.com/wx/tianqi'
+                            'url'   => 'http://www.weather.com.cn'
                         ],
                             [
                             'type'  => 'click',
                             'name'  => '签到',
                             'key'   => 'qian'
                         ],
-                             [
-                              "type"=> "pic_photo_or_album",
-                              "name"=> "paizhao",
-                              "key"=> "rselfmenu_1_1"
-                             ],
                              [
                                "type"=> "pic_weixin",
                                "name"=> "weixin",
@@ -301,6 +325,40 @@ class TextController extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
         $img = file_get_contents($url);
         $res = file_put_contents('good.jpg',$img);
-        var_dump($res);
+        dd($res);
+    }
+        private function image_text($toUser,$fromUser,$title,$description,$content,$url){
+        $template = "<xml>
+                              <ToUserName><![CDATA[%s]]></ToUserName>
+                              <FromUserName><![CDATA[%s]]></FromUserName>
+                              <CreateTime>%s</CreateTime>
+                              <MsgType><![CDATA[%s]]></MsgType>
+                              <ArticleCount><![CDATA[%s]]></ArticleCount>
+                              <Articles>
+                                <item>
+                                  <Title><![CDATA[%s]]></Title>
+                                  <Description><![CDATA[%s]]></Description>
+                                  <PicUrl><![CDATA[%s]]></PicUrl>
+                                  <Url><![CDATA[%s]]></Url>
+                                </item>
+                              </Articles>
+                            </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'news', 1 ,$title,$description,$content,$url);
+        return $info;
+    }
+        public function getWxUserInfo()
+    {
+        $xml_str = file_get_contents('php://input');
+        $data = simplexml_load_string($xml_str);
+        $token = $this->token();
+        $openid = $data->FromUserName;
+        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$token.'&openid='.$openid.'&lang=zh_CN';
+        // dd($url);exit;
+        //请求接口
+        $client = new Client();
+        $response = $client->request('GET',$url,[
+            'verify'    => false
+        ]);
+        return  json_decode($response->getBody(),true);
     }
 }
