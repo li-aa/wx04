@@ -76,30 +76,21 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
-            }
-                if($data->EventKey=="qian") {
-                 $key = $data->FromUserName;
-                 $times = date("Y-m-d", time());
-                 $date = Redis::zrange($key, 0, -1);
-                if ($date) {
-                     $date = $date[0];
-                 }
-                if ($date == $times) {
-                     $content = "您今日已经签到过了!";
-                } else {
-                         $zcard = Redis::zcard($key);
-                    if ($zcard >= 1) {
-                        Redis::zremrangebyrank($key, 0, 0);
+                    if($data->Event == 'CLICK'){
+                    if($data->EventKey == 'qian'){
+                        $key = 'qian_'.date('Y_m_d',time());// 例子 USER_SIGN_2020_11_11
+//                        echo $key;die;
+                        $content = '签到成功';
+                        $user_sign_info = Redis::zrange($key,0,-1);
+                        if(in_array((string)$toUser,$user_sign_info)){
+                            $content = '已签到,不可重复签到';
+                        }else{
+                            Redis::zadd($key,time(),(string)$toUser);
+                        }
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
                     }
-                    $keys = json_decode(json_encode($obj),true);
-
-
-                    $keys = $keys['FromUserName'];
-                    $zincrby = Redis::zincrby($key, 1, $keys);
-                    $zadd = Redis::zadd($key, $zincrby, $times);
-                    $content = "签到成功您以积累签到" . $zincrby . "天!";
                 }
-
             }
             if(strtolower($data->MsgType)=='text')
             {
