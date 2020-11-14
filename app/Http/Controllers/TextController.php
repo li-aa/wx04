@@ -217,7 +217,7 @@ class TextController extends Controller
     // }
     public function menu(){
         $token = $this->token();
-        dd($token);exit;
+        // dd($token);exit;
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$token;
         // dd($url);exit;
         $menu = [
@@ -231,7 +231,8 @@ class TextController extends Controller
                              'type'  => 'view',
                             'name'  => '商城',
                             'url'   => 'http://pcl.mazhanliang.top'
-                        ],[
+                        ],
+                        [
                         "name"=> "ee",
                          "sub_button"=> [
                              [
@@ -245,9 +246,9 @@ class TextController extends Controller
                             'key'   => 'qian'
                         ],
                              [
-                              "type"=> "view",
+                              "type"=> "click",
                               "name"=> "百度",
-                              "key"=> "https://www.baidu.com/"
+                              "key"=> "https://www.baidu.com"
                              ],
                              [
                                "type"=> "pic_weixin",
