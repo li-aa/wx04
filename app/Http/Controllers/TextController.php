@@ -95,6 +95,19 @@ class TextController extends Controller
             // return true;
         }
 }
+    public function text($data,$content){
+        $toUser = $data->FromUserName;
+        $fromUser = $data->ToUserName;
+        $template = "<xml>
+                                    <ToUserName><![CDATA[%s]]></ToUserName>
+                                    <FromUserName><![CDATA[%s]]></FromUserName>
+                                    <CreateTime>%s</CreateTime>
+                                    <MsgType><![CDATA[%s]]></MsgType>
+                                    <Content><![CDATA[%s]]></Content>
+                                </xml>";
+        $info = sprintf( $template, $toUser, $fromUser, time(), 'text', $content);
+        echo $info;
+    }
     // private function text($toUser,$fromUser,$content)
     // {
     //     $template = "<xml>
