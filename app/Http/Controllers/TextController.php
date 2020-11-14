@@ -222,11 +222,11 @@ class TextController extends Controller
         // dd($url);exit;
         $menu = [
                     'button'    => [
-                        [
-                            'type'  => 'click',
-                            'name'  => 'WX2004',
-                            'key'   => 'k_wx_2004'
-                        ],
+                              [
+                              "type"=> "view",
+                              "name"=> "百度",
+                              "url"=> "https://www.baidu.com/"
+                             ],
                         [
                              'type'  => 'view',
                             'name'  => '商城',
@@ -245,11 +245,7 @@ class TextController extends Controller
                             'name'  => '签到',
                             'key'   => 'qian'
                         ],
-                             [
-                              "type"=> "view",
-                              "name"=> "百度",
-                              "url"=> "https://www.baidu.com"
-                             ],
+
                              [
                                "type"=> "pic_weixin",
                                "name"=> "weixin",
