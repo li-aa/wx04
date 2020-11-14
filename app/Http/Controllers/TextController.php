@@ -246,9 +246,9 @@ class TextController extends Controller
                             'key'   => 'qian'
                         ],
                              [
-                              "type"=> "click",
+                              "type"=> "view",
                               "name"=> "百度",
-                              "key"=> "https://www.baidu.com"
+                              "url"=> "https://www.baidu.com"
                              ],
                              [
                                "type"=> "pic_weixin",
