@@ -23,7 +23,6 @@ class TextController extends Controller
     $tmpStr = implode( $tmpArr );
     $tmpStr = sha1( $tmpStr );
     
-    if( $tmpStr == $signature ){
         $xml_str = file_get_contents('php://input');
         $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
             
@@ -89,7 +88,7 @@ class TextController extends Controller
             }
                         }   
             // return true;
-        }
+        
 }
     protected function text($data,$content){
         $toUser = $data->FromUserName;
