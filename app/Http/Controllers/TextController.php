@@ -27,7 +27,7 @@ class TextController extends Controller
         $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
             
             if (strtolower($data->MsgType) == "event") {
-                关注
+                //关注
                 if (strtolower($data->Event == 'subscribe')) {
                     //回复用户消息(纯文本格式)
                     $toUser = $data->FromUserName;
@@ -86,7 +86,7 @@ class TextController extends Controller
                 }
 
             }
-                        // }   
+                        }   
             // return true;
         
 }
