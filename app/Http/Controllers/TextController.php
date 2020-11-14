@@ -73,13 +73,6 @@ class TextController extends Controller
                     return $info;
                 }
                 if ($data->Event == 'click') {
-                if ($data->EventKey == 'weather') {
-                    //调用天气
-                    $content = $this->getweather();
-                    $this->text($data, $content);
-                    }
-                }
-                if ($data->Event == 'click') {
                 if ($data->EventKey == 'qian') {
                     $key = 'qian' . date('Y_m_d', time());
                     $content = '签到成功';
@@ -246,12 +239,6 @@ class TextController extends Controller
                               "name"=> "xitong",
                               "key"=> "rselfmenu_1_0"
                              ],
-
-                        [
-                            'type'  => 'click',
-                            'name'  => '天气',
-                            'url'   => 'weather'
-                        ],
                             [
                             'type'  => 'click',
                             'name'  => '签到',
@@ -281,18 +268,6 @@ class TextController extends Controller
 
         $json_data = $response->getBody();
         echo $json_data;
-    }
-        public function getweather(){
-        $url='http://api.k780.com/?app=weather.realtime&weaid=1&ag=today,futureDay,lifeIndex,futureHour&appkey=53296&sign=8a16a77a58bc523e3f63a65d696a3fef&format=json';
-        $weather=file_get_contents($url);
-        $weather=json_decode($weather,true);
-        if($weather['success']){
-            $content = '';
-            $v=$weather['result']['realTime'];
-                $content .= "日期:".$v['week']."当日温度:".$v['wtTemp']."天气:".$v['wtNm']."风向:".$v['wtWindNm'];
-
-        }
-        return $content;
     }
     public function media(){
         $token = $this->token();
