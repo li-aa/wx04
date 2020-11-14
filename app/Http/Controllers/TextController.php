@@ -87,15 +87,11 @@ class TextController extends Controller
                 }
 
             }
-                //取关
-                if (strtolower($data->Event == 'unsubscribe')) {
-                    //清除用户的信息
-                }
-            }   
+                        }   
             // return true;
         }
 }
-    public function text($data,$content){
+    protected function text($data,$content){
         $toUser = $data->FromUserName;
         $fromUser = $data->ToUserName;
         $template = "<xml>
@@ -108,19 +104,6 @@ class TextController extends Controller
         $info = sprintf( $template, $toUser, $fromUser, time(), 'text', $content);
         echo $info;
     }
-    // private function text($toUser,$fromUser,$content)
-    // {
-    //     $template = "<xml>
-    //                         <ToUserName><![CDATA[%s]]></ToUserName>
-    //                         <FromUserName><![CDATA[%s]]></FromUserName>
-    //                         <CreateTime>%s</CreateTime>
-    //                         <MsgType><![CDATA[%s]]></MsgType>
-    //                         <Content><![CDATA[%s]]></Content>
-    //                         </xml>";
-    //     $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
-    //     return $info;
-    // }
-
     
         //图片
 
@@ -179,18 +162,18 @@ class TextController extends Controller
         $data = simplexml_load_string($xml_str);
         print_r($data);
     }
-    public function guzzle1(){
-        $appid="wx5e164afbbe916954";
-        $secret="8ef620ee05e3f29c7e4168a0a607d480";
-        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
-        // dd($url);exit;
-        //使用guzzle发起get请求
-        $client = new Client();         //实例化 客户端
-        $response = $client->request('GET',$url,['verify'=>false]);       //发起请求并接收响应
+    // public function guzzle1(){
+    //     $appid="wx5e164afbbe916954";
+    //     $secret="8ef620ee05e3f29c7e4168a0a607d480";
+    //     $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
+    //     // dd($url);exit;
+    //     //使用guzzle发起get请求
+    //     $client = new Client();         //实例化 客户端
+    //     $response = $client->request('GET',$url,['verify'=>false]);       //发起请求并接收响应
 
-        $json_str = $response->getBody();       //服务器的响应数据
-        echo $json_str;
-    }
+    //     $json_str = $response->getBody();       //服务器的响应数据
+    //     echo $json_str;
+    // }
     //     public function guzzle2()
     // {
     //     $access_token = $this->token();
