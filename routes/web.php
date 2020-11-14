@@ -29,3 +29,4 @@ Route::get('/wx/media','TextController@media');
 Route::get('/wx/wang','TextController@wang');
 Route::get('/wx/media_insert','TextController@media_insert');
 Route::get('/wx/getWxUserInfo','TextController@getWxUserInfo');
+Route::get('/wx/uploadMedia','TextController@uploadMedia');

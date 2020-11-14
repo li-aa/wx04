@@ -27,7 +27,7 @@ class TextController extends Controller
         $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
             
             if (strtolower($data->MsgType) == "event") {
-                //关注
+                关注
                 if (strtolower($data->Event == 'subscribe')) {
                     //回复用户消息(纯文本格式)
                     $toUser = $data->FromUserName;
@@ -86,7 +86,7 @@ class TextController extends Controller
                 }
 
             }
-                        }   
+                        // }   
             // return true;
         
 }
@@ -106,28 +106,28 @@ class TextController extends Controller
     
         //图片
 
-    //     protected function imageHandler($obj){
+    public function uploadMedia()
+    {
+        $access_token = $this->token();
+        $type = 'video';        //素材类型 image voice video thumb
+        $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type='.$type;
 
-    //     //入库
+        $media = 'p.mp4';     //要上传的素材
+        //使用guzzle发起get请求
+        $client = new Client();         //实例化 客户端
+        $response = $client->request('POST',$url,[
+            'verify'    => false,
+            'multipart' => [
+                [
+                    'name'  => 'media',
+                    'contents'  => fopen($media,'r')
+                ],         //上传的文件路径]
+            ]
+        ]);       //发起请求并接收响应
 
-    //     //下载素材
-    //     $token = $this->token();
-    //     $media_id = $obj->MediaId;
-    //     //dd($media_id);exit;
-    //     $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
-    //     $img = file_get_contents($url);
-    //     // dd($img);exit;
-    //     // $media_path = 'upload/good.jpg';
-    //     $res = file_put_contents("kkk.jpg",$img);
-    //     dd($res);exit;
-    //     // return $res;
-    //     if($res)
-    //     {
-    //         echo "保存成功";
-    //     }else{
-    //         // TODO 保存失败
-    //     }
-    // }
+        $data = $response->getBody();
+        echo $data;
+    }
     public function token(){
           $key = 'wx:access_token';
 
