@@ -74,7 +74,7 @@ class TextController extends Controller
                 }
                 if ($data->Event == 'click') {
                 if ($data->EventKey == 'qian') {
-                    $key = 'qian_' . date('Y_m_d', time());
+                    $key = 'qian' . date('Y_m_d', time());
                     $content = '签到成功';
                     $user_sign_info = Redis::zrange($key, 0, -1);
                     if(in_array((string)$toUser,$user_sign_info)){
