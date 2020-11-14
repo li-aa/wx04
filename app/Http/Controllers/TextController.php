@@ -72,14 +72,14 @@ class TextController extends Controller
                     $info = sprintf($template, $toUser, $fromUser, time(), $msgType, $content);
                     return $info;
                 }
-                if ($data->Event == 'CLICK') {
+                if ($data->Event == 'click') {
                 if ($data->EventKey == 'weather') {
                     //调用天气
                     $content = $this->getweather();
                     $this->text($data, $content);
                     }
                 }
-                if ($data->Event == 'CLICK') {
+                if ($data->Event == 'click') {
                 if ($data->EventKey == 'qian') {
                     $key = 'qian' . date('Y_m_d', time());
                     $content = '签到成功';
