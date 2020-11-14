@@ -1,36 +1,3 @@
-
-
-                if (strtolower($data->Event == 'subscribe')) {
-                    //回复用户消息(纯文本格式)
-                    $toUser = $data->FromUserName;
-                    $fromUser = $data->ToUserName;
-                    $msgType = 'text';
-                    $content = '欢迎关注';
-                    //根据OPENID获取用户信息（并且入库）
-                        //1.获取openid
-                    $token=$this->token();
-                    $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
-                    file_put_contents('wx_event.log',$url);
-                    $user=file_get_contents($url);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <?php
 
 namespace App\Http\Controllers;
@@ -55,9 +22,10 @@ class TextController extends Controller
     sort($tmpArr, SORT_STRING);
     $tmpStr = implode( $tmpArr );
     $tmpStr = sha1( $tmpStr );
-
+    
+    if( $tmpStr == $signature ){
         $xml_str = file_get_contents('php://input');
-        $data = simplexml_load_string($xml_str);
+        $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
             if (strtolower($data->MsgType) == "event") {
                 //关注
                 if (strtolower($data->Event == 'subscribe')) {
@@ -92,7 +60,6 @@ class TextController extends Controller
                         ];
                         $data=UserModel::insert($data);
                     }
-
                     //%s代表字符串(发送信息)
                     $template = "<xml>
                             <ToUserName><![CDATA[%s]]></ToUserName>
@@ -108,40 +75,10 @@ class TextController extends Controller
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
                 }
-            }
-                if($data->EventKey=="qian") {
-                 $key = $data->FromUserName;
-                 $times = date("Y-m-d", time());
-                 $date = Redis::zrange($key, 0, -1);
-                if ($date) {
-                     $date = $date[0];
-                 }
-                if ($date == $times) {
-                     $content = "您今日已经签到过了!";
-                } else {
-                         $zcard = Redis::zcard($key);
-                    if ($zcard >= 1) {
-                        Redis::zremrangebyrank($key, 0, 0);
-                    }
-                    $keys = json_decode(json_encode($obj),true);
-
-
-                    $keys = $keys['FromUserName'];
-                    $zincrby = Redis::zincrby($key, 1, $keys);
-                    $zadd = Redis::zadd($key, $zincrby, $times);
-                    $content = "签到成功您以积累签到" . $zincrby . "天!";
-                }
-
-            }
-        if( $tmpStr == $signature ){
-            echo $echostr;die;
-        }else{
-            return false;
-        }
             }   
             // return true;
-        
-
+        }
+}
     // private function text($toUser,$fromUser,$content)
     // {
     //     $template = "<xml>
@@ -326,38 +263,4 @@ class TextController extends Controller
         $res = file_put_contents('good.jpg',$img);
         var_dump($res);
     }
-    //     private function image_text($toUser,$fromUser,$title,$description,$content,$url){
-    //     $template = "<xml>
-    //                           <ToUserName><![CDATA[%s]]></ToUserName>
-    //                           <FromUserName><![CDATA[%s]]></FromUserName>
-    //                           <CreateTime>%s</CreateTime>
-    //                           <MsgType><![CDATA[%s]]></MsgType>
-    //                           <ArticleCount><![CDATA[%s]]></ArticleCount>
-    //                           <Articles>
-    //                             <item>
-    //                               <Title><![CDATA[%s]]></Title>
-    //                               <Description><![CDATA[%s]]></Description>
-    //                               <PicUrl><![CDATA[%s]]></PicUrl>
-    //                               <Url><![CDATA[%s]]></Url>
-    //                             </item>
-    //                           </Articles>
-    //                         </xml>";
-    //     $info = sprintf($template, $toUser, $fromUser, time(), 'news', 1 ,$title,$description,$content,$url);
-    //     return $info;
-    // }
-    //     public function getWxUserInfo()
-    // {
-
-    //     $token = $this->token();
-    //     $openid = ;
-    //     $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$token.'&openid='.$openid.'&lang=zh_CN';
-    //     // dd($url);exit;
-    //     //请求接口
-    //     $client = new Client();
-    //     $response = $client->request('GET',$url,[
-    //         'verify'    => false
-    //     ]);
-    //     dd($response);exit;
-    //     return  json_decode($response->getBody(),true);
-    // }
 }
