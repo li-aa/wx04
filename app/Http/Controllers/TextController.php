@@ -26,6 +26,7 @@ class TextController extends Controller
     if( $tmpStr == $signature ){
         $xml_str = file_get_contents('php://input');
         $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
+            
             if (strtolower($data->MsgType) == "event") {
                 //关注
                 if (strtolower($data->Event == 'subscribe')) {
@@ -71,6 +72,21 @@ class TextController extends Controller
                     $info = sprintf($template, $toUser, $fromUser, time(), $msgType, $content);
                     return $info;
                 }
+                if ($data->Event == 'click') {
+                if ($data->EventKey == 'qian') {
+                    $key = 'qian_' . date('Y_m_d', time());
+                    $content = '签到成功';
+                    $user_sign_info = Redis::zrange($key, 0, -1);
+                    if(in_array((string)$toUser,$user_sign_info)){
+                        $content='已经签到，不可重复签到';
+                    }else{
+                        Redis::zadd($key,time(),(string)$toUser);
+                    }
+                    $result= $this->text($data, $content);
+                    return $result;
+                }
+
+            }
                 //取关
                 if (strtolower($data->Event == 'unsubscribe')) {
                     //清除用户的信息
@@ -244,16 +260,7 @@ class TextController extends Controller
         ]);
 
         $json_data = $response->getBody();
-        echo $json_data;exit;
-        //判断接口返回
-        $info = json_decode($json_data,true,);
-        // dd($info);exit;
-        if($info['errcode'] > 0)        //判断错误码
-        {
-            // TODO 处理错误
-        }else{
-            // TODO 创建菜单成功逻辑
-        }
+        echo $json_data;
     }
     public function media(){
         $token = $this->token();
