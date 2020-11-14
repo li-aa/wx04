@@ -79,7 +79,7 @@ class TextController extends Controller
                     $this->text($data, $content);
                     }
                 }
-                if ($data->Event == 'click') {
+                if ($data->Event == 'CLICK') {
                 if ($data->EventKey == 'qian') {
                     $key = 'qian' . date('Y_m_d', time());
                     $content = '签到成功';
@@ -248,7 +248,7 @@ class TextController extends Controller
                              ],
 
                         [
-                            'type'  => 'view',
+                            'type'  => 'click',
                             'name'  => '天气',
                             'url'   => 'weather'
                         ],
